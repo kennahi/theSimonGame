@@ -6,6 +6,8 @@ var level = 0;                                             //the level of the ga
 var playerTurn = 0;                                        //checks whether its the player's turn or not (0 or 1)
 var count = 1;                                             //checks how many times the user has to press the buttons
 
+/*----------------------------------------------functions------------------------------------------------------*/
+
 //Generate a random number for the color sequences + plays the sound + animation
 function nextSequence() {
     var randomNumber;
@@ -38,6 +40,7 @@ function Gameover() {
         }, 200);
         playSound("wrong");
         level = 0;
+        playerTurn = 0;
         $("h1").html("GAMEOVER! press a to retry");
         userClickedPattern = [];
         gamePattern = [];
@@ -49,6 +52,17 @@ function playSound(name) {
     var audio = new Audio("sounds/" + name + ".mp3");
     audio.play();
 }
+
+//Play a pressing button animation
+function buttonPressed(button) {
+    $(button).addClass("pressed");
+    setTimeout(() => {
+        $(button).removeClass("pressed");
+    }, 50);
+    playSound($(button).attr("id"));
+}
+
+/*----------------------------------------------events----------------------------------------------------------*/
 
 //The start of the game
 $(document).keydown(function (event) {
@@ -62,6 +76,9 @@ $(".btn").click(function () {
     if (playerTurn === 1) {
         var userChosenColor = $(this).attr("id");
         userClickedPattern.push(userChosenColor);
+        buttonPressed($(this));
+        playSound($(this).attr("id"));
+
         if (userClickedPattern[count - 1] != gamePattern[count - 1]) {
             Gameover();
             return;
@@ -71,25 +88,12 @@ $(".btn").click(function () {
         }
 
         if (count > gamePattern.length) {
-            userClickedPattern = [];
             playerTurn = 0;
+            userClickedPattern = [];
             setTimeout(() => {
                 nextSequence();
             }, 1000);
-
         }
-
-
     }
 })
 
-//Play sounds and animation when pressing on a button
-$(".btn").click(function () {
-    if (level != 0) {
-        $(this).addClass("pressed");
-        setTimeout(() => {
-            $(this).removeClass("pressed");
-        }, 50);
-        playSound($(this).attr("id"));
-    }
-})
