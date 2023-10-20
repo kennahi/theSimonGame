@@ -89,8 +89,3 @@ $(document).keydown(function (event) {
         nextSequence();
     }
 })
-t) {
-    if ((event.key === "a") && (level === 0)) {
-        nextSequence();
-    }
-})
