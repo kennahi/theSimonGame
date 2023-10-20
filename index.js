@@ -1,10 +1,10 @@
-var userClickedPattern = [];
-var buttonColors = ["red", "blue", "green", "yellow"];
-var gamePattern = [];
-var level = 0;
-var playerTurn = 0;
-var count = 1;
-
+// Global variables
+var userClickedPattern = [];                               //the pattern of the user
+var buttonColors = ["red", "blue", "green", "yellow"];     //an array of the available colors
+var gamePattern = [];                                      //the pattern of the game
+var level = 0;                                             //the level of the game
+var playerTurn = 0;                                        //checks whether its the player's turn or not (0 or 1)
+var count = 1;                                             //checks how many times the user has to press the buttons
 
 //Generate a random number for the color sequences + plays the sound + animation
 function nextSequence() {
@@ -28,6 +28,34 @@ function nextSequence() {
         count = 1;
     }
 }
+
+//Gameover and restart the game
+function Gameover() {
+    if (level != 0) {
+        $("body").addClass("game-over");
+        setTimeout(() => {
+            $("body").removeClass("game-over");
+        }, 200);
+        playSound("wrong");
+        level = 0;
+        $("h1").html("GAMEOVER! press a to retry");
+        userClickedPattern = [];
+        gamePattern = [];
+    }
+}
+
+//function for the sound
+function playSound(name) {
+    var audio = new Audio("sounds/" + name + ".mp3");
+    audio.play();
+}
+
+//The start of the game
+$(document).keydown(function (event) {
+    if ((event.key === "a") && (level === 0)) {
+        nextSequence();
+    }
+})
 
 //user pattern
 $(".btn").click(function () {
@@ -55,17 +83,6 @@ $(".btn").click(function () {
     }
 })
 
-//Gameover and restart the game
-function Gameover() {
-    if (level != 0) {
-        playSound("wrong");
-        level = 0;
-        $("h1").html("GAMEOVER! press a to retry");
-        userClickedPattern = [];
-        gamePattern = [];
-    }
-}
-
 //Play sounds and animation when pressing on a button
 $(".btn").click(function () {
     if (level != 0) {
@@ -74,18 +91,5 @@ $(".btn").click(function () {
             $(this).removeClass("pressed");
         }, 50);
         playSound($(this).attr("id"));
-    }
-})
-
-//function for the sound
-function playSound(name) {
-    var audio = new Audio("sounds/" + name + ".mp3");
-    audio.play();
-}
-
-//The start of the game
-$(document).keydown(function (event) {
-    if ((event.key === "a") && (level === 0)) {
-        nextSequence();
     }
 })
